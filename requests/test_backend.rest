@@ -1,0 +1,17 @@
+### Get all persons
+GET https://fso-osa3-39cx.onrender.com/api/persons/
+
+### Get a single person
+GET https://your-render-url/api/persons/1
+
+### Add a new person
+POST https://your-render-url/api/persons
+Content-Type: application/json
+
+{
+  "name": "John Doe",
+  "number": "123-456789"
+}
+
+### Delete a person
+DELETE https://your-render-url/api/persons/1
