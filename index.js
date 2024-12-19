@@ -38,12 +38,6 @@ app.get("/", (request, response) => {
   response.send("<h1>Hello World!</h1>");
 });
 
-app.get("/api/persons", (request, response) => {
-  Person.find({}).then((persons) => {
-    response.json(persons);
-  });
-});
-
 app.get("/api/persons", (request, response, next) => {
   Person.find({})
     .then((persons) => {
@@ -81,6 +75,28 @@ app.delete("/api/persons/:id", (request, response, next) => {
       }
     })
     .catch((error) => next(error)); // Virheiden käsittely
+});
+
+// Päivitä henkilön numero
+app.put("/api/persons/:id", (request, response, next) => {
+  const id = request.params.id;
+  const body = request.body;
+
+  const person = {
+    name: body.name,
+    number: body.number,
+  };
+
+  // Etsitään henkilö ja päivitetään hänen tietonsa
+  Person.findByIdAndUpdate(id, person, { new: true, runValidators: true })
+    .then((updatedPerson) => {
+      if (updatedPerson) {
+        response.json(updatedPerson); // Palautetaan päivitetty henkilö
+      } else {
+        response.status(404).json({ error: "Person not found" }); // Jos henkilöä ei löydy
+      }
+    })
+    .catch((error) => next(error)); // Jos virhe tapahtuu
 });
 
 app.post("/api/persons", (request, response, next) => {
