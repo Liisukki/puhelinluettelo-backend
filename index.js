@@ -121,15 +121,15 @@ app.post("/api/persons", (request, response, next) => {
     .catch((error) => next(error));
 });
 
-app.get("/info", (request, response) => {
-  const numberOfPersons = persons.length;
-  const currentDate = new Date();
-
-  const info = `
-      <p>Phonebook has info for ${numberOfPersons} people</p>
-      <p>${currentDate}</p>
-    `;
-  response.send(info);
+// Info reitti
+app.get("/info", (request, response, next) => {
+  Person.countDocuments({})
+    .then((count) => {
+      const currentDate = new Date();
+      const info = `<p>Phonebook has info for ${count} people</p> <p>${currentDate}</p>`;
+      response.send(info);
+    })
+    .catch((error) => next(error));
 });
 
 app.use(unknownEndpoint);
