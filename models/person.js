@@ -7,7 +7,7 @@ const url = process.env.MONGODB_URI;
 console.log("connecting to", url);
 mongoose
   .connect(url)
-  .then((result) => {
+  .then(() => {
     console.log("connected to MongoDB");
   })
   .catch((error) => {
@@ -18,11 +18,18 @@ const personSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
-    minlength: [3, "Name must be at least 3 characters long"], // Vähintään 3 merkkiä pitkä nimi
+    minlength: [3, "Name must be at least 3 characters long"],
   },
   number: {
     type: String,
-    required: true,
+    required: [true, "Phone number is required"],
+    validate: {
+      validator: function (v) {
+        return /^\d{2,3}-\d{7,}$/.test(v); // Ensimmäinen osa: 2-3 numeroa, toinen osa: vähintään 7 numeroa
+      },
+      message: (props) =>
+        `${props.value} is not a valid phone number! Correct format: XX-XXXXXXX or XXX-XXXXXXX`,
+    },
   },
 });
 
